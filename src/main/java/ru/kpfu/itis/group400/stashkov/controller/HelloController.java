@@ -28,7 +28,7 @@ public class HelloController {
     }
 
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<User> findAll() {   // возвращаем DTO, а не сущности
+    public List<UserDto> findAll() {   // возвращаем DTO, а не сущности
         return userService.findAll();
     }
 }
