@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kpfu.itis.group400.stashkov.dto.UserDto;
+import ru.kpfu.itis.group400.stashkov.model.User;
 import ru.kpfu.itis.group400.stashkov.service.HelloService;
 import ru.kpfu.itis.group400.stashkov.service.UserService;
 
@@ -27,7 +28,7 @@ public class HelloController {
     }
 
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserDto> findAll() {   // возвращаем DTO, а не сущности
+    public List<User> findAll() {   // возвращаем DTO, а не сущности
         return userService.findAll();
     }
 }

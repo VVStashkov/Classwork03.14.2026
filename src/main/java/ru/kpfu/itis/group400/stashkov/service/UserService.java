@@ -20,11 +20,13 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<UserDto> findAll() {
+    public List<User> findAll() {
 
-        return userRepository.findAll().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+        return userRepository.findAll();
+        //временно закомментировал чтобы увидеть что пароли хэшируются
+//                .stream()
+//                .map(this::convertToDto)
+//                .collect(Collectors.toList());
 
 //        return userRepositoryHiber.findAll().stream()
 //                .map(this::convertToDto)
