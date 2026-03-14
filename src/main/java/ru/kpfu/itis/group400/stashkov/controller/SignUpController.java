@@ -5,18 +5,26 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.kpfu.itis.group400.stashkov.model.Role;
 import ru.kpfu.itis.group400.stashkov.model.User;
+import ru.kpfu.itis.group400.stashkov.repository.RoleRepository;
 import ru.kpfu.itis.group400.stashkov.repository.UserRepository;
+
+import java.util.List;
 
 @Controller
 public class SignUpController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
-    public SignUpController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public SignUpController(UserRepository userRepository,
+                            PasswordEncoder passwordEncoder,
+                            RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping("/signUp")
@@ -34,8 +42,16 @@ public class SignUpController {
         User user = new User();
         user.setUsername(name);
         user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
 
-        return "redirect:/login";
+        Role userRole = roleRepository.findByName("ROLE_USER")
+                .orElseGet(() -> {
+                    Role role = new Role();
+                    role.setName("ROLE_USER");
+                    return roleRepository.save(role);
+                });
+        user.setRoles(List.of(userRole));
+
+        userRepository.save(user);
+        return "redirect:/login?registered";
     }
 }
