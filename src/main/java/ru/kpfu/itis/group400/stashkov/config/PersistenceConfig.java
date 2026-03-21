@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.Properties;
-
 @Configuration
 @EnableTransactionManagement
 @PropertySource("classpath:persistence.properties")
@@ -48,59 +47,56 @@ public class PersistenceConfig implements EnvironmentAware {
 
     @Bean
     public HibernateJpaVendorAdapter jpaVendorAdapter() {
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setDatabase(Database.valueOf(environment.getProperty("spring.database")));
-        vendorAdapter.setShowSql(true);
-        vendorAdapter.setGenerateDdl(true);
-        return vendorAdapter;
+        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        adapter.setDatabase(Database.valueOf(environment.getProperty("spring.database")));
+        adapter.setShowSql(true);
+        adapter.setGenerateDdl(true); // JPA генерирует схему
+        return adapter;
     }
 
     @Bean
     public EntityManagerFactory entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-        entityManagerFactory.setJpaVendorAdapter(jpaVendorAdapter());
-        entityManagerFactory.setPackagesToScan("ru.kpfu.itis.group400.stashkov.model");
-        entityManagerFactory.setDataSource(dataSource());
-        entityManagerFactory.afterPropertiesSet();
-        return entityManagerFactory.getObject();
+        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+        factory.setJpaVendorAdapter(jpaVendorAdapter());
+        factory.setPackagesToScan("ru.kpfu.itis.group400.stashkov.model");
+        factory.setDataSource(dataSource());
+        factory.afterPropertiesSet();
+        return factory.getObject();
     }
 
     @Bean
-    @Primary
+    @Primary   // основной менеджер транзакций – для JPA
     public PlatformTransactionManager transactionManager() {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory());
-        return transactionManager;
+        JpaTransactionManager tx = new JpaTransactionManager();
+        tx.setEntityManagerFactory(entityManagerFactory());
+        return tx;
     }
 
+    // Hibernate native конфигурация
     @Bean
-    @Primary
     public LocalSessionFactoryBean localSessionFactoryBean() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setPackagesToScan("ru.kpfu.itis.group400.stashkov.model");
 
         Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
+        // Используем свойства из persistence.properties
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto",
+                environment.getProperty("hibernate.hbm2ddl.auto", "none")); // none, чтобы не конфликтовать с JPA
+        // Можно добавить и другие свойства, например, диалект
+        hibernateProperties.setProperty("hibernate.dialect",
+                environment.getProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect"));
         sessionFactory.setHibernateProperties(hibernateProperties);
 
         return sessionFactory;
     }
 
+    // Менеджер транзакций для Hibernate
     @Bean
     public PlatformTransactionManager hibernateTransactionManager() {
-        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(localSessionFactoryBean().getObject());
-        return transactionManager;
-    }
-
-    @Bean
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslationPostProcessor() {
-        return new PersistenceExceptionTranslationPostProcessor();
-    }
-
-    @Bean
-    public PersistenceAnnotationBeanPostProcessor persistenceAnnotationBeanPostProcessor() {
-        return new PersistenceAnnotationBeanPostProcessor();
+        HibernateTransactionManager tx = new HibernateTransactionManager();
+        // Используем уже созданный бин sessionFactory, а не вызываем метод заново
+        tx.setSessionFactory(localSessionFactoryBean().getObject());
+        return tx;
     }
 }

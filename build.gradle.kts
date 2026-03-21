@@ -35,6 +35,8 @@ dependencies {
     implementation("org.springframework.security:spring-security-web:${springSecurityVersion}")
     implementation("org.springframework.security:spring-security-config:${springSecurityVersion}")
     implementation("org.springframework.security:spring-security-taglibs:${springSecurityVersion}")
+    implementation("ch.qos.logback:logback-classic:1.5.6")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0")
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.3")
 }
