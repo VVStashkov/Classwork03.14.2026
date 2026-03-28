@@ -6,11 +6,11 @@
 </head>
 <body>
 <h2>Вход</h2>
-<#if RequestParameters.error??>
-    <p style="color: red;">Неверное имя пользователя или пароль</p>
+<#if message??>
+    <div class="alert alert-success">${message}</div>
 </#if>
-<#if RequestParameters.registered??>
-    <p style="color: green;">Регистрация успешна. Войдите.</p>
+<#if error??>
+    <div class="alert alert-danger">${error}</div>
 </#if>
 <form action="/login" method="post">
     <label>Имя пользователя:</label>

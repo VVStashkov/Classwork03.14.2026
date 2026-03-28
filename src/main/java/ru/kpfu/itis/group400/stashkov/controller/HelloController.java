@@ -5,9 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kpfu.itis.group400.stashkov.dto.UserDto;
-import ru.kpfu.itis.group400.stashkov.model.User;
 import ru.kpfu.itis.group400.stashkov.service.HelloService;
-import ru.kpfu.itis.group400.stashkov.service.UserService;
+import ru.kpfu.itis.group400.stashkov.service.UserServiceImpl;
 
 import java.util.List;
 
@@ -15,9 +14,9 @@ import java.util.List;
 public class HelloController {
 
     private final HelloService helloService;
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    public HelloController(HelloService helloService, UserService userService) {
+    public HelloController(HelloService helloService, UserServiceImpl userService) {
         this.helloService = helloService;
         this.userService = userService;
     }

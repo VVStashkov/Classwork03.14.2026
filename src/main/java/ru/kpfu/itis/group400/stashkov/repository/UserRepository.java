@@ -39,4 +39,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             nativeQuery = true)
     void update(@Param("user") User user);
 
+    Optional<User> findByVerificationCode(String verificationCode);
+
+    Optional<User> findByEmail(String email);
+
 }

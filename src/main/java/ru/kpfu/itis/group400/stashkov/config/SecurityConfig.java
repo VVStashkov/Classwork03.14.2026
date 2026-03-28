@@ -42,9 +42,10 @@ public class SecurityConfig {
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/signUp", "/login", "/notes/public").permitAll()   // добавили /login
+                        .requestMatchers("/", "/signUp", "/login", "/notes/public", "/verification").permitAll()   // добавили /login
                         .requestMatchers("/hello", "/notes/**").hasRole("USER")
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                        .requestMatchers("error/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
