@@ -1,0 +1,126 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="stash (generated)" id="1775857561848-1">
+        <createTable tableName="user_status">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_status_pkey"/>
+            </column>
+            <column name="status_name" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-2">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" startWith="14" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="login" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstname" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastname" type="VARCHAR(100)"/>
+            <column name="status" type="INTEGER"/>
+            <column name="description" type="VARCHAR(200)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-3">
+        <createTable tableName="posts">
+            <column autoIncrement="true" name="id" startWith="26" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="posts_pkey"/>
+            </column>
+            <column name="data" type="VARCHAR(1024)"/>
+            <column name="writer" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="likes" type="INTEGER"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="title" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-4">
+        <createTable tableName="comments">
+            <column autoIncrement="true" name="id" startWith="17" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="comments_pkey"/>
+            </column>
+            <column name="post_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="writer" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-5">
+        <createTable tableName="categories">
+            <column autoIncrement="true" name="id" startWith="8" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="categories_pkey"/>
+            </column>
+            <column name="category_name" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-6">
+        <addUniqueConstraint columnNames="status_name" constraintName="user_status_status_name_key" tableName="user_status"/>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-7">
+        <addUniqueConstraint columnNames="login" constraintName="users_login_key" tableName="users"/>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-8">
+        <addUniqueConstraint columnNames="category_name" constraintName="categories_status_name_key" tableName="categories"/>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-9">
+        <createTable tableName="liked_posts">
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="liked_posts_pkey"/>
+            </column>
+            <column name="post_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="liked_posts_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-10">
+        <createTable tableName="posts_categories">
+            <column name="post_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="posts_categories_pkey"/>
+            </column>
+            <column name="category" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="posts_categories_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-11">
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="comments" constraintName="comments_post_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="posts" validate="true"/>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-12">
+        <addForeignKeyConstraint baseColumnNames="writer" baseTableName="comments" constraintName="comments_writer_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-13">
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="liked_posts" constraintName="liked_posts_post_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="posts" validate="true"/>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-14">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="liked_posts" constraintName="liked_posts_user_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-15">
+        <addForeignKeyConstraint baseColumnNames="category" baseTableName="posts_categories" constraintName="posts_categories_category_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="categories" validate="true"/>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-16">
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="posts_categories" constraintName="posts_categories_post_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="posts" validate="true"/>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-17">
+        <addForeignKeyConstraint baseColumnNames="writer" baseTableName="posts" constraintName="posts_writer_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="stash (generated)" id="1775857561848-18">
+        <addForeignKeyConstraint baseColumnNames="status" baseTableName="users" constraintName="users_status_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_status" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

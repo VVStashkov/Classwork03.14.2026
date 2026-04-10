@@ -13,10 +13,8 @@ spring:
     show-sql: true
 
   liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
+    change-log: classpath:db/changelog/db-changelog.xml
     enabled: true
-
-
   freemarker:
     enabled: true
     template-loader-path: /WEB-INF/templates
@@ -39,6 +37,7 @@ logging:
   level:
     org.springframework.mail: DEBUG
     org.eclipse.angus.mail: DEBUG
+    liquibase: INFO
 mail:
   base-url: http://localhost:8080
   sender: Test Application
