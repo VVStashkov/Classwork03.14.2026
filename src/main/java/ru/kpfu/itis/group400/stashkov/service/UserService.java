@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserService {
 
-    List<UserDto> findAll();
+    List<UserDto> getAll();
 
     UserDto findByUsername(String username);
 

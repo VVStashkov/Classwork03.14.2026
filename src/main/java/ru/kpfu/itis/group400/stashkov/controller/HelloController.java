@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kpfu.itis.group400.stashkov.dto.UserDto;
 import ru.kpfu.itis.group400.stashkov.service.HelloService;
-import ru.kpfu.itis.group400.stashkov.service.UserServiceImpl;
+import ru.kpfu.itis.group400.stashkov.service.UserService;
 
 import java.util.List;
 
@@ -14,9 +14,9 @@ import java.util.List;
 public class HelloController {
 
     private final HelloService helloService;
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
-    public HelloController(HelloService helloService, UserServiceImpl userService) {
+    public HelloController(HelloService helloService, UserService userService) {
         this.helloService = helloService;
         this.userService = userService;
     }
@@ -28,6 +28,6 @@ public class HelloController {
 
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserDto> findAll() {   // возвращаем DTO, а не сущности
-        return userService.findAll();
+        return userService.getAll();
     }
 }

@@ -7,6 +7,7 @@ plugins {
     id("war")
     // Плагин liquibase-gradle больше не используется
     // id("org.liquibase.gradle") version "2.2.2"
+    id("jacoco")
 }
 
 group = "org.example"
@@ -20,7 +21,7 @@ repositories {
     mavenCentral()
 }
 
-// Создаём собственную конфигурацию для зависимостей Liquibase
+// Собственная конфигурация для зависимостей Liquibase CLI
 val liquibaseRuntime by configurations.creating {
     isCanBeResolved = true
     isCanBeConsumed = false
@@ -45,12 +46,42 @@ dependencies {
     liquibaseRuntime("org.postgresql:postgresql:$postgresVersion")
     liquibaseRuntime("info.picocli:picocli:4.6.3")
 
+    // Spring Boot Starter Test уже включает JUnit Jupiter, Mockito, AssertJ и т.д.
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
+
+    // Lombok
     compileOnly("org.projectlombok:lombok:$lombokVersion")
     annotationProcessor("org.projectlombok:lombok:$lombokVersion")
 }
 
-tasks.test {
+tasks.withType<Test> {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.12"
+    reportsDirectory.set(layout.buildDirectory.dir("jacoco"))
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = BigDecimal.valueOf(0.1)
+            }
+        }
+    }
 }
 
 tasks.withType<JavaCompile> {

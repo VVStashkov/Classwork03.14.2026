@@ -33,14 +33,14 @@ public class UserServiceImpl implements UserService {
     private final JavaMailSender mailSender;
 
     @Override
-    public List<UserDto> findAll() {
+    public List<UserDto> getAll() {
 
         return userRepository.findAll()
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
 
-//        return userRepositoryHiber.findAll().stream()
+//        return userRepositoryHiber.getAll().stream()
 //                .map(this::convertToDto)
 //                .collect(Collectors.toList());
     }
@@ -107,6 +107,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserDto convertToDto(User user) {
+        if (user == null) {
+            return null;
+        }
         return new UserDto(user.getId(), user.getUsername());
     }
 
