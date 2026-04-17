@@ -1,5 +1,6 @@
 package ru.kpfu.itis.group400.stashkov.service;
 
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -180,4 +181,31 @@ class UserServiceImplTest {
         userService.updateUser(user);
         verify(userRepository).update(user);
     }
+
+
+    // Добавить в существующий UserServiceImplTest
+
+    @Test
+    void createUser_whenRoleNotFound_shouldCreateNewRole() {
+        CreateUserDto dto = new CreateUserDto("newuser", "pass", "mail@ex.com");
+        given(userRepository.findByUsername("newuser")).willReturn(Optional.empty());
+        given(userRepository.findByEmail("mail@ex.com")).willReturn(Optional.empty());
+        given(passwordEncoder.encode("pass")).willReturn("encoded");
+        given(roleRepository.findByName("ROLE_USER")).willReturn(Optional.empty());
+        Role newRole = new Role();
+        newRole.setName("ROLE_USER");
+        given(roleRepository.save(any(Role.class))).willReturn(newRole);
+        given(mailSender.createMimeMessage()).willReturn(mock(MimeMessage.class));
+        given(mailProperties.content()).willReturn("...");
+        given(mailProperties.from()).willReturn("...");
+        given(mailProperties.baseUrl()).willReturn("...");
+        given(mailProperties.sender()).willReturn("...");
+        given(mailProperties.subject()).willReturn("...");
+
+        userService.createUser(dto);
+
+        verify(roleRepository).save(any(Role.class));
+        verify(userRepository).save(any(User.class));
+    }
+
 }

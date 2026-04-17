@@ -210,4 +210,57 @@ class NoteServiceTest {
         assertThatThrownBy(() -> noteService.deleteNoteByIdAdmin(100L, user))
                 .isInstanceOf(SecurityException.class);
     }
+
+    // В классе NoteServiceTest (уже есть, но нужно дополнить)
+
+    @Test
+    void updateNote_whenNoteNotFound_shouldThrowException() {
+        User author = createUser(1L, "author", "ROLE_USER");
+        given(noteRepository.findById(99L)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> noteService.updateNote(99L, "Title", "Content", false, author))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Note not found");
+    }
+
+    @Test
+    void deleteNote_whenNoteNotFound_shouldThrowException() {
+        User author = createUser(1L, "author", "ROLE_USER");
+        given(noteRepository.findById(99L)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> noteService.deleteNote(99L, author))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Note not found");
+    }
+
+    @Test
+    void getNoteByIdAndUser_whenNoteExistsButAuthorMismatch_shouldReturnEmpty() {
+        User author = createUser(1L, "author", "ROLE_USER");
+        User other = createUser(2L, "other", "ROLE_USER");
+        Note note = createNote(5L, "Title", author, false);
+        given(noteRepository.findById(5L)).willReturn(Optional.of(note));
+
+        Optional<Note> result = noteService.getNoteByIdAndUser(5L, other);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void getAllNotes_whenAdminRoleNotFound_shouldThrowException() {
+        User admin = createUser(1L, "admin", "ROLE_ADMIN");
+        given(roleRepository.findByName("ROLE_ADMIN")).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> noteService.getAllNotes(admin))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("unexisting role");
+    }
+
+    @Test
+    void deleteNoteByIdAdmin_whenAdminRoleNotFound_shouldThrowException() {
+        User admin = createUser(1L, "admin", "ROLE_ADMIN");
+        given(roleRepository.findByName("ROLE_ADMIN")).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> noteService.deleteNoteByIdAdmin(100L, admin))
+                .isInstanceOf(RuntimeException.class);
+    }
 }
