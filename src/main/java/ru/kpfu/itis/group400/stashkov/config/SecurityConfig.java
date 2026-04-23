@@ -43,8 +43,8 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/", "/signUp", "/login", "/notes/public", "/verification").permitAll()
-                        .requestMatchers("/hello", "/notes/**").hasRole("USER")
-                        .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/hello", "/notes/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/admin/**", "/metrics/**").hasAnyRole("ADMIN")
                         .requestMatchers("error/**").permitAll()
                         .anyRequest().authenticated()
                 )

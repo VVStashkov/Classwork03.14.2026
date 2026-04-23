@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.kpfu.itis.group400.stashkov.aop.BenchMark;
 import ru.kpfu.itis.group400.stashkov.service.UserService;
 
 @AllArgsConstructor
@@ -13,6 +14,7 @@ public class VerificationController {
 
     private final UserService userService;
 
+    @BenchMark
     @GetMapping("/verification")
     public String verify(@RequestParam("code") String code,
                          RedirectAttributes redirectAttributes) {

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.kpfu.itis.group400.stashkov.aop.BenchMark;
+import ru.kpfu.itis.group400.stashkov.aop.Count;
 import ru.kpfu.itis.group400.stashkov.model.Note;
 import ru.kpfu.itis.group400.stashkov.service.CustomUserDetails;
 import ru.kpfu.itis.group400.stashkov.service.NoteService;
@@ -22,12 +24,16 @@ public class NoteController {
         this.noteService = noteService;
     }
 
+    @Count
+    @BenchMark
     @GetMapping
     public String listMyNotes(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         model.addAttribute("notes", noteService.getNotesByUser(userDetails.getUser()));
         return "notes";
     }
 
+    @Count
+    @BenchMark
     @GetMapping("/public")
     public String listPublicNotes(Model model) {
         model.addAttribute("notes", noteService.getNotesByPublic());

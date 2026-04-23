@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.kpfu.itis.group400.stashkov.aop.BenchMark;
+import ru.kpfu.itis.group400.stashkov.aop.Count;
 import ru.kpfu.itis.group400.stashkov.dto.CreateUserDto;
 import ru.kpfu.itis.group400.stashkov.model.Role;
 import ru.kpfu.itis.group400.stashkov.model.User;
@@ -24,12 +26,14 @@ public class SignUpController {
 
     private final UserService userService;
 
+    @Count
     @GetMapping("/signUp")
     public String showSignUpForm(Model model) {
         model.addAttribute("createUserDto", new CreateUserDto("", "", ""));
         return "signUp";
     }
-
+    @BenchMark
+    @Count
     @PostMapping("/signUp")
     public String signUp(@ModelAttribute("createUserDto") CreateUserDto createUserDto,
                          RedirectAttributes redirectAttributes) {
